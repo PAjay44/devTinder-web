@@ -1,4 +1,3 @@
-import React from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,31 +12,31 @@ const NavBar = () => {
   const handleLogout = async () => {
     try {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
-
-      dispatch(removeUser()); // removing data from the store
-      navigate('/login')
+      dispatch(removeUser());
+      return navigate("/login");
     } catch (err) {
-      // Error
+      // Error logic maybe redirect to error page
     }
   };
+
   return (
     <div className="navbar bg-base-300">
       <div className="flex-1">
         <Link to="/" className="btn btn-ghost text-xl">
-          DevTinder
+          👩‍💻 DevTinder
         </Link>
       </div>
       {user && (
         <div className="flex-none gap-2">
           <div className="form-control">Welcome, {user.firstName}</div>
-          <div className="dropdown dropdown-end mx-5">
+          <div className="dropdown dropdown-end mx-5 flex">
             <div
               tabIndex={0}
               role="button"
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                <img alt="Tailwind CSS Navbar component" src={user.photoUrl} />
+                <img alt="user photo" src={user.photoUrl} />
               </div>
             </div>
             <ul
@@ -51,7 +50,11 @@ const NavBar = () => {
                 </Link>
               </li>
               <li>
-                <a>Settings</a>
+                <Link to="/connections">Connections</Link>
+              </li>
+
+              <li>
+                <Link to="/requests">Requests</Link>
               </li>
               <li>
                 <a onClick={handleLogout}>Logout</a>
@@ -63,5 +66,4 @@ const NavBar = () => {
     </div>
   );
 };
-
 export default NavBar;

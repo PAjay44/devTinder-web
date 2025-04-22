@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../utils/feedSlice";
-import axios from "axios";
+import { useEffect } from "react";
 import UserCard from "./UserCard";
 
 const Feed = () => {
@@ -10,35 +10,31 @@ const Feed = () => {
   const dispatch = useDispatch();
 
   const getFeed = async () => {
-    if (feed && feed.length > 0) return; // Check if feed already has data
-
+    if (feed) return;
     try {
       const res = await axios.get(BASE_URL + "/feed", {
         withCredentials: true,
       });
-      dispatch(addFeed(res?.data?.data)); // Ensure res.data.data is passed
+      dispatch(addFeed(res?.data?.data));
     } catch (err) {
-      console.log("Error fetching feed:", err);
+      //TODO: handle error
     }
   };
 
   useEffect(() => {
     getFeed();
   }, []);
+  if (!feed) return;
 
-  console.log("Feed data in component:", feed);
+  if (feed.length <= 0)
+    return <h1 className="flex justify-center my-10">No new users founds!</h1>;
 
   return (
-    feed && feed.length > 0 ? ( // Ensure feed is not empty before rendering
+    feed && (
       <div className="flex justify-center my-10">
-        {feed.map((user) => (
-          <UserCard key={user._id} user={user} />
-        ))}
+        <UserCard user={feed[0]} />
       </div>
-    ) : (
-      <div>Loading...</div> // Display loading message or fallback UI
     )
   );
 };
-
 export default Feed;
